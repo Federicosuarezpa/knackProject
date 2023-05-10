@@ -1,32 +1,52 @@
-const { removeDuplicates } = require('./index.js');
+const { removeDuplicates, readJsonFile } = require('../Application/RemoveDuplicates');
 
 describe('removeDuplicates', () => {
-    const originalArray = [
-        { _id: 1, name: 'object1' },
-        { _id: 2, name: 'object2' },
-        { _id: 1, name: 'object1' },
-        { _id: 3, name: 'object3' },
-    ];
-
-    it('should remove duplicate objects based on _id', () => {
-        const expectedArray = [
-            { _id: 1, name: 'object1' },
-            { _id: 2, name: 'object2' },
-            { _id: 3, name: 'object3' },
+    it('should remove duplicate objects based on a key', () => {
+        const input = [
+            { id: 1, name: 'Alice' },
+            { id: 2, name: 'Bob' },
+            { id: 3, name: 'Alice' },
+            { id: 4, name: 'Charlie' },
+            { id: 5, name: 'Alice' },
         ];
-        const spy = jest.spyOn(console, 'log');
-        const newArray = removeDuplicates(originalArray, '_id');
-        expect(newArray).toEqual(expectedArray);
-        expect(spy).not.toHaveBeenCalled();
-        spy.mockRestore();
-    });
 
-    it('should not modify the original array', () => {
-        const spy = jest.spyOn(console, 'log');
-        const newArray = removeDuplicates(originalArray, '_id');
-        expect(newArray).not.toBe(originalArray);
-        expect(spy).not.toHaveBeenCalled();
-        spy.mockRestore();
+        const expectedOutput = [
+            { id: 1, name: 'Alice' },
+            { id: 2, name: 'Bob' },
+            { id: 4, name: 'Charlie' },
+        ];
+
+        const actualOutput = removeDuplicates(input, 'name');
+
+        expect(actualOutput).toEqual(expectedOutput);
     });
 });
 
+describe('readJsonFile', () => {
+    it('should read and parse a valid JSON file', (done) => {
+        const filename = './Files/mock_json.json';
+        const expectedData = { foo: 'bar' };
+        readJsonFile(filename, (error, data) => {
+            expect(data).toEqual(expectedData);
+            done();
+        });
+    });
+
+    it('should return an error for an invalid JSON file', (done) => {
+        const filename = './Files/error_json.txt';
+        readJsonFile(filename, (error, data) => {
+            expect(error.message).toEqual('File is not a valid JSON');
+            expect(data).toBeUndefined();
+            done();
+        });
+    });
+
+    it('should return an error for a non-existent file', (done) => {
+        const filename = 'non-existent.json';
+        readJsonFile(filename, (error, data) => {
+            expect(error.message).toMatch(/ENOENT/);
+            expect(data).toBeUndefined();
+            done();
+        });
+    });
+});
