@@ -67,7 +67,7 @@ function processJsonFile(filename, fileSave) {
 }
 
 // Call the main function to process the JSON file
-processJsonFile('../Files/mock_application.json', '../Files/clean_application.json');
+processJsonFile('./Files/mock_application.json', './Files/clean_application.json');
 
 module.exports = { removeDuplicates };
 
