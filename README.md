@@ -6,6 +6,8 @@ Basically it reads the JSON file, loops over every version it
 has and also over every object -> fields && scene -> view. 
 
 The code filters to check if there are multiple values with the same '_id' and it returns only one.
+The code also checks that two objects don't have the same key value, because we assume that if that occurs it means that
+the object is duplicated, so we remove one of them.
 After that, we only save the original Json with the modified data and not duplicated values.
 
 ### Requirements
